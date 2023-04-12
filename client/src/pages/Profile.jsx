@@ -234,7 +234,7 @@ function Profile() {
         <Box w="80">
           <CreatePost />
         </Box>
-        <Post />
+        {/* <Post /> */}
       </Container>
     </div>
   );
