@@ -6,7 +6,7 @@ import MainPost from '../post/mainpost/MainPost'
 
 function Home() {
   const { data } = useSelector((store) => store.userMangerdata);
-  console.log(data)
+  // console.log(data)
 
   return (
     <div>

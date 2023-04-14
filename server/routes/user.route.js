@@ -135,19 +135,61 @@ userrouter.delete("/:id", async (req, res) => {
 });
 
 //get a user
-userrouter.get("/", async (req, res) => {
-  const userId = req.query.userId;
-  const username = req.query.username;
+userrouter.get("/:id", async (req, res) => {
   try {
-    const user = userId
-      ? await User.findById(userId)
-      : await User.findOne({ username: username });
-    const { password, updatedAt, ...other } = user._doc;
-    res.status(200).json(other);
+    const user = await User.findById(req.params.id);
+
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
+//update users  profilePicture
+
+
+userrouter.put("/:id/profilePicture", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.profilePicture = req.body.profilePicture;
+    const updatedUser = await user.save();
+
+    res.status(200).json(updatedUser);
+
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
+//update users  coverPicture
+
+
+userrouter.put("/:id/coverPicture", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.coverPicture = req.body.coverPicture;
+    const updatedUser = await user.save();
+
+    res.status(200).json(updatedUser);
+
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 
 //get friends
 userrouter.get("/friends/:userId", async (req, res) => {

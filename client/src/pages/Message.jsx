@@ -10,7 +10,7 @@ function Message() {
   const [formData, setFormData] = useState(initState);
 
 
-  console.log(formData)
+  // console.log(formData)
 
 
 
@@ -95,6 +95,10 @@ function Message() {
       {/* <button onClick={post}>Post</button> */}
 
       {/* <button onClick={handleLikes}>Like</button> */}
+
+
+
+      
     </div>
   );
 }

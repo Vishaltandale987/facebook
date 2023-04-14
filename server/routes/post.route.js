@@ -2,9 +2,9 @@ const Post = require("../model/Post.modal");
 const User = require("../model/User.model");
 const express = require("express");
 const postrouter = express.Router();
+
+
 // get post
-
-
 postrouter.get("/", async (req, res) => {
     try {
       const notes = await Post.find();
@@ -14,6 +14,9 @@ postrouter.get("/", async (req, res) => {
     }
   
   });
+
+
+
 
 //create a post
 
@@ -79,6 +82,19 @@ postrouter.put("/:id/like", async (req, res) => {
 postrouter.get("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+
+// get post by userId
+
+
+postrouter.get("/userpost/:id", async (req, res) => {
+  try {
+    const post = await Post.find({userId:req.params.id});
     res.status(200).json(post);
   } catch (err) {
     res.status(500).json(err);

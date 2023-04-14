@@ -21,33 +21,50 @@ import {
   CheckCircleIcon,
 } from "@chakra-ui/icons";
 export default function Post({ data }) {
-  console.log("aaaaaaaaaaaaaaaa", data._id);
 
   const [postData, setpostData] = useState();
-  const [like, setlike] = useState({
-    likecount: 1,
-    state: false,
-  });
   const [showComments, setComments] = useState(false);
   const [createComment, setcreateComment] = useState("");
+  const [topsection, settopsection] = useState()
+
   const toast = useToast();
 
+  // time 
+
+  const currentDate = new Date(); // Get the current date and time
+  const pastDate = new Date(data.createdAt); // Set the past date and time
+
+  const difference = currentDate.getTime() - pastDate.getTime(); 
+
+  console.log("tiem",difference)
+
   //like
+  let ass = localStorage.getItem('id')
   let idata = {
-    userId: "64359d85b38f8fa5576cfbc5",
+    userId: ass,
   };
 
+  console.log("assssssssssssssssssssssssssssssssssssssssssssssssss",data)
+
+
   const handleLikes = async () => {
+    // console.log(data._id,data.userId)
     try {
       const res = await axios.put(
-        `http://localhost:8088/post/643683350a3570cf0ce891c7/like`,
+        `http://localhost:8088/post/${data._id}/like`,
         idata
       );
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.log(error);
     }
   };
+
+
+  useEffect(() => {
+    handleLikes()
+  }, [data.likes.length])
+  
 
   //comments
 
@@ -86,9 +103,29 @@ export default function Post({ data }) {
     }
   };
 
+  // console.log("topsection",topsection)
   useEffect(() => {
     getPost();
   }, []);
+
+
+  //top  section
+
+
+  const getTopData = async () => {
+    try {
+      const res = await axios(`http://localhost:8088/user/${data.userId}`);
+      settopsection(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getPost();
+    getTopData()
+  }, []);
+
 
   // console.log(postData);
 
@@ -124,7 +161,7 @@ export default function Post({ data }) {
               alt=""
             />
             {/* </Link> */}
-            <span className="postUsername">Vishal Tandale</span>
+            <span className="postUsername">{data.username}</span>
             <span className="postDate">10 min</span>
           </div>
           <div className="postTopRight">

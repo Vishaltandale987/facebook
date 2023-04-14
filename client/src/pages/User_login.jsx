@@ -15,10 +15,9 @@ import {
   useToast,
   Spinner,
 } from "@chakra-ui/react";
-import {  NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { userAuthLogin } from "../redux/userAuth/auth.actions";
 import { useDispatch, useSelector } from "react-redux";
-// import Link from "react-router-dom";
 
 const initState = {
   email: "",
@@ -30,9 +29,9 @@ function User_login() {
 
   const [formData, setFormData] = useState(initState);
   const navigate = useNavigate();
-  const toast = useToast()
+  const toast = useToast();
   const dispatch = useDispatch();
-console.log(data)
+  console.log("reducer datat", data.isAuthenticated);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -45,37 +44,28 @@ console.log(data)
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "email": formData.email
-        }
+          email: formData.email,
+        },
       });
       res = await res.json();
       if (res.msg == "Blocked") {
         alert(`You are Blocked for 24 Hours`);
         return;
-      };
+      }
     } catch (err) {
       console.log(err);
-    };
-
+    }
 
     dispatch(userAuthLogin(formData));
+  };
+  console.log(data.isAuthenticated)
 
-    // toast({
-    //   position: "top",
-    //   title:"You are Successfully logged in",
-    //   // description: "done",
-    //   status: "success",
-    //   duration: 4000,
-    //   isClosable: false,
-    // });
-    console.log(formData)
-    // navigate("/");
-
+  if (data.isAuthenticated) {
+    alert("login")
+    setTimeout(() => {
+      navigate("/");
+    }, 2000);
   }
-  // console.log(formData)
-
-
-
 
   return (
     <Flex
@@ -110,12 +100,12 @@ console.log(data)
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
-              <Input 
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
+              <Input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
               />
             </FormControl>
 
@@ -128,7 +118,7 @@ console.log(data)
                 <Checkbox>Remember me</Checkbox>
               </Stack>
               <Button
-              onClick={handleSubmit}
+                onClick={handleSubmit}
                 bg={"blue.400"}
                 color={"white"}
                 _hover={{

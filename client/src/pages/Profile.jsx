@@ -18,19 +18,217 @@ import { AddIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
 import { Link, useNavigate } from "react-router-dom";
 import CreatePost from "../post/createPost/CreatePost";
 import Post from "../post/Poster/Post";
+import axios from "axios";
 
 function Profile() {
   const navigate = useNavigate();
+
   const [image, setimage] = useState("");
+  const [coverimage, setcoverimage] = useState("");
+
+
+  // console.log("image",image)
+  // console.log("coverimage",coverimage)
+
+
+
+  const [postData, setpostData] = useState();
+  const [getuser, setgetuser] = useState();
+
+  const [Profile, setProfile] = useState("")
+  const [cover, setcover] = useState("")
+
+  // console.log("image cover",cover)
 
   const userCredential = "";
   //  const NumberFormat =""
   //  const posts =""
   //  const UserPostCard =""
 
+  //get post userId
+  let ass = localStorage.getItem("id");
+  const getPost = async () => {
+    try {
+      const res = await axios(`http://localhost:8088/post/userpost/${ass}`);
+      setpostData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+    getPost();
+    
+  }, []);
+
+
+  //follow
+
+  let id = {
+    userId: ass,
+  };
+
+  // console.log("id", id);
+
+  const handleFollow = async () => {
+    try {
+      const res = await axios.put(
+        `http://localhost:8088/user/64369b857d8ec50f9b7d20e2/follow`,
+        id
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //following
+
+  const handleFollowing = async () => {
+    try {
+      const res = await axios.put(
+        `http://localhost:8088/user/64369b857d8ec50f9b7d20e2/unfollow`,
+        id
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //getuserdata
+  const getUserData = async () => {
+    try {
+      const res = await axios(`http://localhost:8088/user/${ass}`);
+      setgetuser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+
+  //Update Profile Image
+
+
+  let Profile_obj = {
+    profilePicture:Profile
+  }
+
+  // console.log("Profile_obj",Profile_obj)
+
+  const handleUpdateprofileImage = async () => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "ml_default");
+    data.append("cloud_name", "dd9cmhunr");
+
+    fetch("http://api.cloudinary.com/v1_1/dd9cmhunr/image/upload", {
+      method: "POST",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setProfile(data.url);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+
+  const addprofile = async () => {
+
+    
+    try {
+      const res = await axios.put(
+        `http://localhost:8088/user/${ass}/profilePicture`,
+        Profile_obj
+      );
+      // console.log(res);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  
+
+
+  if(Profile !== ""){
+    addprofile()
+
+
+   
+    setimage("")
+  }
+
+
+    //Update cover Image
+
+
+    let cover_obj = {
+      coverPicture:cover
+    }
+  
+    // console.log("cover_obj",cover_obj)
+  
+    const handleUpdatecoverImage = async () => {
+      const data = new FormData();
+      data.append("file", coverimage);
+      data.append("upload_preset", "ml_default");
+      data.append("cloud_name", "dd9cmhunr");
+  
+      fetch("http://api.cloudinary.com/v1_1/dd9cmhunr/image/upload", {
+        method: "POST",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setcover(data.url);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  
+  
+    const addcover = async () => {
+      try {
+        const res = await axios.put(
+          `http://localhost:8088/user/${ass}/coverPicture`,
+          cover_obj
+        );
+        console.log(res.data);
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  
+  
+    if(cover !== ""){
+      addcover()
+  
+  
+   
+    
+      setcoverimage("")
+    }
+
+
+
+
+
   return (
     <div>
       <Container maxW="5xl" mt={10}>
+
+     
+
+
         <Flex gap={6} w="100%">
           <Box w={{ base: "100%", md: "75%" }}>
             <Box
@@ -43,26 +241,84 @@ function Profile() {
                 h={"200px"}
                 w={"full"}
                 src={
-                  "https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+                  getuser?.coverPicture
                 }
                 objectFit={"cover"}
               />
-              <Flex pl={10}>
-                <Avatar
-                  mt={-12}
-                  size={"2xl"}
-                  bg={"blue.500"}
-                  src={"https://avatars.githubusercontent.com/u/107469218?v=4"}
-                  css={{ border: "2px solid white" }}
-                />
 
-                <div className="shareOptions">
-                  <label htmlFor="file" className="shareOption">
+
+            <div className="shareOptions" style={{
+              float:"right"
+            }}>
+                  <label htmlFor="file" className="n">
                     <AddIcon ml={-4} className="shareIcon" />
                     <input
                       style={{ display: "none" }}
                       type="file"
                       id="file"
+                      // accept=".png,.jpeg,.jpg"
+                      onChange={(e) => setcoverimage(e.target.files[0])}
+                    />
+                  </label>
+                  {coverimage && (
+                    <div
+                      className="shareImgContainer"
+                      style={{
+                        display: "flex",
+                      }}
+                    >
+                      <img
+                        src={URL.createObjectURL(coverimage)}
+                        alt=""
+                        style={{
+                          width: "50px",
+                          borderRadius: "50px",
+                          marginTop: "30px",
+                        }}
+                      />
+
+                      <CloseIcon
+                        // className="shareCancelImg"
+                        onClick={() => setcoverimage("")}
+                        style={{
+                          marginTop: "30px",
+                        }}
+                      />
+                      <Button
+                        colorScheme="whatsapp"
+                        style={{
+                          marginTop: "30px",
+                          marginLeft: "100px",
+                        }}
+                        onClick={handleUpdatecoverImage}
+                      >
+                        Change Cover
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+
+
+
+
+
+              <Flex pl={10}>
+                <Avatar
+                  mt={-12}
+                  size={"2xl"}
+                  bg={"blue.500"}
+                  src={getuser?.profilePicture}
+                  css={{ border: "2px solid white" }}
+                />
+
+                <div className="shareOptions">
+                  <label htmlFor="file1" className="shareOption">
+                    <AddIcon ml={-4} className="shareIcon" />
+                    <input
+                      style={{ display: "none" }}
+                      type="file"
+                      id="file1"
                       // accept=".png,.jpeg,.jpg"
                       onChange={(e) => setimage(e.target.files[0])}
                     />
@@ -91,23 +347,20 @@ function Profile() {
                           marginTop: "30px",
                         }}
                       />
-                      <Button colorScheme='whatsapp' style={{
-                        marginTop:"30px",
-                        marginLeft:"100px"
-                      }} >Change</Button>
-                      
+                      <Button
+                        colorScheme="whatsapp"
+                        style={{
+                          marginTop: "30px",
+                          marginLeft: "100px",
+                        }}
+                        onClick={handleUpdateprofileImage}
+                      >
+                        Change Profile
+                      </Button>
                     </div>
                   )}
                 </div>
-                {/* <IconButton
-                  mt={2}
-                  mr={10}
-                  fontSize={"xl"}
-                  aria-label="Edit"
-                  bg={"#fff"}
-                  _hover={{ bg: "blue.500" }}
-                  icon={<EditIcon />}
-                /> */}
+         
               </Flex>
 
               <Box p={4}>
@@ -142,7 +395,7 @@ function Profile() {
                         h="7px"
                         w="7px"
                       ></Box>
-                      <Text fontWeight={"500"}>Online</Text>
+                      <Text fontWeight={"500"}>{getuser?.username}</Text>
                     </Box>
                   </Flex>
                   <Text fontSize={"md"} color={"gray.800"}>
@@ -153,22 +406,24 @@ function Profile() {
                   </Text>
                 </Stack>
                 <Stack pl={4} mt="2" direction={"row"} fontSize=".9em">
+                <Text>    {getuser?.followers.length} </Text>
                   <Text
-                    as={Link}
-                    to={`/follow/${userCredential._id}`}
                     _hover={{ textDecoration: "underline" }}
                     fontWeight="semibold"
                     color={"blue.500"}
+                    onClick={handleFollow}
                   >
-                    {/* {NumberFormat(userCredential.followerCount)}  */}
+                
                     Followers
                   </Text>
+
+                <Text>    {getuser?.followings.length} </Text>
+
                   <Text
-                    as={Link}
-                    to={`/follow/${userCredential._id}`}
                     _hover={{ textDecoration: "underline" }}
                     fontWeight="semibold"
                     color={"blue.500"}
+                    onClick={handleFollowing}
                   >
                     {/* {NumberFormat(userCredential.followingCount)}  */}
                     Following
@@ -187,54 +442,17 @@ function Profile() {
               cursor="pointer"
             ></Grid>
           </Box>
-
-          {/* <Box w="25%" maxH="67vh" display={{ base: "none", md: "flex" }} boxShadow={"2xl"}
-            rounded={"md"} overflow={"hidden"} justifyContent="center">
-            <Stack justify={"center"} divider={<StackDivider />} spacing="4">
-              <Box>
-                <Heading size="xs" textTransform="uppercase">
-                  Account
-                </Heading>
-                <Flex flexDir={"column"}>
-                  <Text as={Link} to="/" pt="2" fontSize="sm">
-                    Setting & Privacy
-                  </Text>
-                  <Text as={Link} to="/" pt="2" fontSize="sm">
-                    Help
-                  </Text>
-                  <Text as={Link} to="/" pt="2" fontSize="sm">
-                    Language
-                  </Text>
-                </Flex>
-              </Box>
-              <Box>
-                <Heading size="xs" textTransform="uppercase">
-                  Manage
-                </Heading>
-                <Flex flexDir={"column"}>
-                  {" "}
-                  <Text as={Link} to="/" pt="2" fontSize="sm">
-                    Post & Activity
-                  </Text>
-                  <Text as={Link} to="/" pt="2" fontSize="sm">
-                    Job Posting Account
-                  </Text>
-                  <Text as={Link} to="/" pt="2" fontSize="sm">
-                    Masai School
-                  </Text>
-                </Flex>
-              </Box>
-              <Button w="100%" size="xs" border="1px solid blue" borderRadius={"10px"} bg="#fff" _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }} >
-                Sign Out
-              </Button>
-            </Stack>
-          </Box> */}
         </Flex>
+
         {/* <UserEditModal isOpen={isOpen} onClose={onClose} /> */}
         <Box w="80">
           <CreatePost />
         </Box>
         {/* <Post /> */}
+
+        {postData?.map((el, index) => {
+          return <Post key={index} data={el} />;
+        })}
       </Container>
     </div>
   );

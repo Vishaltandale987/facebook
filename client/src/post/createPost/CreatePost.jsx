@@ -1,6 +1,6 @@
 import "./createPost.css";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { AddIcon, MoonIcon } from "@chakra-ui/icons";
 import { Input, useToast } from "@chakra-ui/react";
@@ -8,8 +8,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { frameData } from "framer-motion";
 
+let id = localStorage.getItem("id");
+
+
+
+
+
 const initState = {
-  userId: "64359d85b38f8fa5576cfbc5",
+  username:"",
+  userId: id,
   desc: "",
   img: "",
 };
@@ -20,45 +27,32 @@ export default function CreatePost() {
   const desc = useRef();
   const [image, setimage] = useState("");
   const [formData, setFormData] = useState(initState);
+
+
+
   
   const toast = useToast();
+
+
+  //get username
+
+  let getId =async () => {
+    try {
+      const res = await axios(`http://localhost:8088/user/${id}`);
+       
+       setFormData({ ...formData, username: res.data.username });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+useEffect(() => {
+  getId()
+
+}, [])
   
-  let id = localStorage.getItem("id");
 
  
-
-  // const handlePost = async (e) => {
-  //   e.preventDefault();
-
-  //   let formData = new FormData();
-  //   formData.append("photo", image);
-  //   formData.append("description", description);
-  //   axios.post(`http://localhost:8080/upload/${id}`, formData, {
-  //     headers: {
-  //       "Content-Type": "multipart/form-data",
-  //     },
-  //   })
-  //     .then((res) => {
-  //       console.log("Success ", res.data);
-
-  //       setimage("");
-  //       setdescription("");
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-
-  //   toast({
-  //     position: "top",
-  //     title: "You are Successfully created Post",
-  //     // description: "done",
-  //     status: "success",
-  //     duration: 4000,
-  //     isClosable: false,
-  //   });
-  // };
-
-
 
   // cloudinaty && post
 
@@ -76,7 +70,7 @@ export default function CreatePost() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.url);
+        // console.log(data.url);
         setFormData({ ...formData, img: data.url });
       })
       .catch((err) => {
@@ -90,7 +84,7 @@ export default function CreatePost() {
 
   };
 
-  console.log("data",formData)
+  // console.log("data",formData)
 
 
   const add = async () => {
@@ -118,8 +112,6 @@ export default function CreatePost() {
   if(formData.img !== ""){
     add()
 
-  }else{
-    console.log("fuck")
   }
 
 
@@ -222,43 +214,4 @@ export default function CreatePost() {
 
 
 
-// const submit = async () => {
-    
-//   const data = new FormData();
-//   data.append("file", image);
-//   data.append("upload_preset", "ml_default");
-//   data.append("cloud_name", "dd9cmhunr");
 
-//   fetch("http://api.cloudinary.com/v1_1/dd9cmhunr/image/upload", {
-//     method: "POST",
-//     body: data,
-//   })
-//     .then((res) => res.json())
-//     .then((data) => {
-//       console.log(data.url);
-//       // setFormData({ ...formData, img: data.url });
-
-//       initState.push({ img: data.url});
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-
-
-//     if(formData.img !== ""){
-//       try{
-//         let res=await axios.post('http://localhost:8088/post',formData)
-//         console.log(res.data)
-//       }
-//       catch(err){
-    
-//       console.log(err)
-//       }
-//     }else{
-//       console.log("fuck")
-//     }
-
-//    console.log(formData);
-
-
-// };

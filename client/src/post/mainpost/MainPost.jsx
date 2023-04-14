@@ -16,11 +16,30 @@ function MainPost() {
     }
   };
 
+  //top section
+
+  // time 
+
+// Get the current time
+const now = new Date();
+
+// Parse the given time string into a Date object
+const givenTime = new Date("2023-04-13T18:52:07.689Z");
+
+// Calculate the difference in minutes
+const diffInMinutes = Math.floor((givenTime.getTime() - now.getTime()) / (1000 * 60));
+
+ console.log("time" ,diffInMinutes)
+
+ 
+
+
+
   useEffect(() => {
     getPost();
   }, []);
 
-  console.log("mainpost",postData)
+  // console.log("mainpost",postData)
 
 
   return (
