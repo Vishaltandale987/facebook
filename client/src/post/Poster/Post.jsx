@@ -1,70 +1,67 @@
 import "./post.css";
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import {
-  Avatar,
   Box,
   Button,
-  Flex,
-  Image,
-  ListItem,
-  Text,
-  UnorderedList,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-
+import { BsFillHeartFill } from "react-icons/bs";
 import {
-  PhoneIcon,
-  AddIcon,
-  WarningIcon,
-  CheckCircleIcon,
+ 
+  DeleteIcon,
 } from "@chakra-ui/icons";
 export default function Post({ data }) {
-
   const [postData, setpostData] = useState();
   const [showComments, setComments] = useState(false);
   const [createComment, setcreateComment] = useState("");
-  const [topsection, settopsection] = useState()
+  const [topsection, settopsection] = useState();
 
   const toast = useToast();
 
-  // time 
-
-  const currentDate = new Date(); // Get the current date and time
-  const pastDate = new Date(data.createdAt); // Set the past date and time
-
-  const difference = currentDate.getTime() - pastDate.getTime(); 
-
-  console.log("tiem",difference)
+  // time
 
   //like
-  let ass = localStorage.getItem('id')
+  let ass = localStorage.getItem("id");
   let idata = {
     userId: ass,
   };
-
-  console.log("assssssssssssssssssssssssssssssssssssssssssssssssss",data)
-
 
   const handleLikes = async () => {
     // console.log(data._id,data.userId)
     try {
       const res = await axios.put(
-        `http://localhost:8088/post/${data._id}/like`,
+        `https://graceful-fox-apron.cyclic.app/post/${data._id}/like`,
         idata
       );
-      // console.log(res);
+    
+    
+      toast({
+        position: "top",
+        title: `You Like ${data.username} post.`,
+        // description: "done",
+        status: "success",
+        duration: 4000,
+        isClosable: false,
+      });
+
+      setTimeout(() => {
+        
+        window.location.reload(false);
+      }, 3000);
+      
     } catch (error) {
       console.log(error);
     }
   };
 
 
-  useEffect(() => {
-    handleLikes()
-  }, [data.likes.length])
-  
 
   //comments
 
@@ -96,7 +93,7 @@ export default function Post({ data }) {
 
   const getPost = async () => {
     try {
-      const res = await axios("http://localhost:8088/post");
+      const res = await axios("https://graceful-fox-apron.cyclic.app/post");
       setpostData(res.data);
     } catch (error) {
       console.log(error);
@@ -108,13 +105,11 @@ export default function Post({ data }) {
     getPost();
   }, []);
 
-
   //top  section
-
 
   const getTopData = async () => {
     try {
-      const res = await axios(`http://localhost:8088/user/${data.userId}`);
+      const res = await axios(`https://graceful-fox-apron.cyclic.app/user/${data.userId}`);
       settopsection(res.data);
     } catch (error) {
       console.log(error);
@@ -123,31 +118,25 @@ export default function Post({ data }) {
 
   useEffect(() => {
     getPost();
-    getTopData()
+    getTopData();
   }, []);
 
+  // Delete post
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const handleDeletePost = async () => {
+    let postId = data._id;
 
-  // console.log(postData);
+    console.log(postId, idata);
 
-  // useEffect(() => {
-  //   setIsLiked(post.likes.includes(currentUser._id));
-  // }, [currentUser._id, post.likes]);
+    try {
+      const res = await axios.delete(`https://graceful-fox-apron.cyclic.app/post/${postId}`,{ data:idata} );
+      alert(res.data.response.data)
+    } catch (error) {
+      console.log(error);
+    }
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const res = await axios.get(`/users?userId=${post.userId}`);
-  //     setUser(res.data);
-  //   };
-  //   fetchUser();
-  // }, [post.userId]);
-
-  // const likeHandler = () => {
-  //   try {
-  //     axios.put("/posts/" + post._id + "/like", { userId: currentUser._id });
-  //   } catch (err) {}
-  //   setLike(isLiked ? like - 1 : like + 1);
-  //   setIsLiked(!isLiked);
-  // };
+    onClose()
+  };
 
   return (
     <div className="post">
@@ -157,15 +146,36 @@ export default function Post({ data }) {
             {/* <Link to={`/profile/${user.username}`}> */}
             <img
               className="postProfileImg"
-              src="https://bit.ly/3kkJrly"
+              src={data.user_profilePicture}
               alt=""
             />
             {/* </Link> */}
             <span className="postUsername">{data.username}</span>
-            <span className="postDate">10 min</span>
+            <span className="postDate">{data.postTime}</span>
           </div>
           <div className="postTopRight">
-            <h1>add</h1>
+            {/* <h1
+            onClick={handleDeletePost}
+            >Delete</h1> */}
+            <DeleteIcon onClick={onOpen} />
+
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalBody>
+                  <p> <b>  Are you sure you want to delete your post. </b></p>
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button colorScheme="blue" mr={3} onClick={onClose}>
+                    Close
+                  </Button>
+                  <Button colorScheme='red'
+                    onClick={handleDeletePost}
+                  >Delete</Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </div>
         </div>
 
@@ -176,7 +186,7 @@ export default function Post({ data }) {
         <div className="postBottom">
           <div className="postBottomLeft">
             <p className="likeIcon" onClick={handleLikes}>
-              <CheckCircleIcon />
+              <BsFillHeartFill />
             </p>
             {/* <p className="likeIcon">lik</p> */}
             <span className="postLikeCounter">{data.likes.length}</span>
@@ -193,14 +203,7 @@ export default function Post({ data }) {
         <h1>{createComment}</h1>
         {showComments && (
           <Box as="section" className="comments-container">
-            {/* <CommentForm autoFocus={true} onSubmit={onCreateComment} />
-
-            {post?.RootComments != null && post?.RootComments.length > 0 && (
-              <CommentsList
-                comments={post.RootComments}
-                replies={post.Replies}
-              />
-            )} */}
+        
             <div className="des">
               <input
                 placeholder={"What's in your mind " + "?"}

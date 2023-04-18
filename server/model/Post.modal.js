@@ -17,6 +17,12 @@ const PostSchema = new mongoose.Schema(
     img: {
       type: String,
     },
+    user_profilePicture: {
+      type: String,
+    },
+    postTime: {
+      type: String,
+    },
     likes: {
       type: Array,
       default: [],
@@ -26,7 +32,7 @@ const PostSchema = new mongoose.Schema(
       default: [],
     },
   },
-  { timestamps: true }
+  { timestamps: false }
 );
 
 module.exports = mongoose.model("Post", PostSchema);

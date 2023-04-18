@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Heading,
@@ -26,7 +26,9 @@ import { authlogout } from '../redux/userAuth/auth.actions';
 
 function User_Auth() {
   const { data, loading, error } = useSelector((store) => store.userMangerdata);
-  const { isAuthenticated } = data;
+
+  const [userdata, setuserdata] = useState()
+
 
     // const [isAuthenticated, setisAuthenticated] =React.useState(true)
     // const [response, setresponse] =React.useState()
@@ -37,16 +39,7 @@ function User_Auth() {
 
 
   
-  // async function getUserData() {
-  //   try {
-  //     const response = await axios.get("http://localhost:8080/usersregister");
-  //     setresponse(response.data);
-  //   }
-  //   catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-  // console.log(response)
+
 
 
   const pulseRing = keyframes`
@@ -61,6 +54,44 @@ function User_Auth() {
       opacity: 0;
     }
     `;
+
+
+
+    // get user
+    let userId = localStorage.getItem("id");
+    // console.log(ass,"asasas")
+
+    const add = () => {
+
+     
+      
+      if(userId === null){
+
+        return false
+
+      }else  if(userId !== ""){
+
+        return true
+
+      }
+
+    }
+
+      let isAuthenticated = add()
+
+    const getUser = async () => {
+  
+  
+      try {
+        const res = await axios(`https://graceful-fox-apron.cyclic.app/user/${userId}`);
+        setuserdata(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    useEffect(() => {
+      getUser()
+    }, [])
 
   return (
     <div>
@@ -103,12 +134,16 @@ function User_Auth() {
                   }}
                 >
                   {/* <img src="https://avatars.githubusercontent.com/u/107469218?v=4" alt="" /> */}
-                  {/* <Avatar
-                    src={user.picture}
+                  <Avatar
+                  style={{
+                    marginLeft:"-22px"
+                  }}
+                    src={userdata?.profilePicture}
                     size="full"
                     position="absolute"
                     top={0}
-                  /> */}
+                    
+                  />
                 </Box>
               </Flex>
             </PopoverTrigger>
@@ -149,42 +184,21 @@ function User_Auth() {
                             fontWeight={500}
                             fontFamily={"body"}
                           >
-                            {/* {user.name} */}
-                            user
+                          {userdata?.username}
                           </Heading>
 
-                          <Heading
-                            fontSize={"sm"}
-                            fontWeight={500}
-                            fontFamily={"body"}
-                          >
-                            {/* {user.email} */}
-                            email
-                          </Heading>
+                   
                         </Stack>
 
                         <Flex justifyContent={"space-around"} pb={"10px"}>
-                          <Button
-                            onClick={() => navigate("/profile")}
-                            w={"fit-content"}
-                            // bg={useColorModeValue("#151f21", "gray.900")}
-                            _hover={{
-                              transform: "translateY(-2px)",
-                              boxShadow: "lg",
-                            }}
-                            color={"white"}
-                          >
-                            Your Profile
-                          </Button>
+                        
                           <Button
                             w={"fit-content"}
+                            mt={10}
                             // bg={useColorModeValue("#151f21", "gray.900")}
                             color={"white"}
                            
-                            _hover={{
-                              transform: "translateY(-2px)",
-                              boxShadow: "lg",
-                            }}
+                            colorScheme='whatsapp'
                             onClick={() =>
                               dispatch(authlogout())
 
@@ -207,6 +221,5 @@ function User_Auth() {
 }
 
 export default User_Auth;
-
 
 

@@ -32,7 +32,7 @@ function Message() {
   const post = async (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:8080/post", {
+    fetch("https://graceful-fox-apron.cyclic.app/post", {
       method: "POST",
       body: JSON.stringify(formData),
       headers: {
@@ -75,23 +75,25 @@ function Message() {
  
   return (
     <div>
-      <input
+      {/* <input
         type="file"
         name="image"
         // value={formData.image}
         onChange={handleChange}
-      />
+      /> */}
 
-
+{/* 
       <input type="text"
         name="description"
         // onChange={(e) => setdescription(e.target.value)}
         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-      />
+      /> */}
+
+      <h1><b>Work in Progress...</b></h1>
 
     
 
-      <button onClick={submit}>image</button>
+      {/* <button onClick={submit}>image</button> */}
       {/* <button onClick={post}>Post</button> */}
 
       {/* <button onClick={handleLikes}>Like</button> */}

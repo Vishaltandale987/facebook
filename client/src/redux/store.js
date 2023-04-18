@@ -3,11 +3,13 @@
 import { applyMiddleware, combineReducers, compose, legacy_createStore } from "redux";
 import thunk from "redux-thunk";
 import { userAuthReducer } from "./userAuth/userAuth.reducer";
+import { productReducer } from "./Products/products.reducer";
 
 // Note: you can delete the line below, but remember to create a new store variable
 const rootReducer=combineReducers({
 
   userMangerdata:userAuthReducer,
+  productManager:productReducer
  
 })
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -12,10 +12,38 @@ import {
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { NavLink } from "react-router-dom";
 
 const LeftCompo = () => {
+  const [userdata, setuserdata] = useState();
+
+  let userId = localStorage.getItem("id");
+
+  const getUser = async () => {
+    try {
+      const res = await axios(
+        `https://graceful-fox-apron.cyclic.app/user/${userId}`
+      );
+      setuserdata(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  // console.log("userdata", userdata?.username);
+
+
+ 
+
   return (
     <>
+     
+
+
       <Box>
         <Card
           h="max-content"
@@ -27,66 +55,39 @@ const LeftCompo = () => {
           <CardBody>
             <Box display={"flex"} justifyContent="center" alignItems={"center"}>
               <Avatar
-                size="1xl"
+                size="0.5x0.5"
                 name="Segun Adebayo"
-                src={ "https://bit.ly/3kkJrly"}
+                w={300}
+                src={userdata?.profilePicture}
               />
             </Box>
-            {/* {userCredential.online ? (
-              <Box
-                w="100%"
-                color={"green"}
-                display={"flex"}
-                justifyContent="center"
-                alignItems={"center"}
-                gap="2"
-                borderRadius="10px"
-                mt="10px"
-              >
-                <Box bg="green" borderRadius={"50%"} h="7px" w="7px"></Box>
-                <Text fontWeight={"500"}>Online</Text>
-              </Box>
-            ) : (
-              <Box
-                color={"gray"}
-                display={"flex"}
-                justifyContent="center"
-                alignItems={"center"}
-                gap="2"
-                borderRadius="10px"
-                mt="10px"
-              >
-                <Box bg="gray" borderRadius={"50%"} h="7px" w="7px"></Box>
-                <Text fontWeight={"500"}>Offline</Text>
-              </Box>
-            )} */}
             <Stack mt="6" spacing="3">
               <Divider />
+              <NavLink to="/log_profile">
+
               <Text size="md" textAlign={"center"} fontWeight="bold">
-                add
+                {userdata?.username}
               </Text>
+              </NavLink>
+
+              <NavLink to="/log_profile">
+
+
               <Text
                 textAlign={"center"}
                 color={"#666666"}
                 _hover={{ textDecoration: "underline", cursor: "pointer" }}
-              > asss
-              </Text>
-              <Divider />
-              <Text
-                color="blue.600"
-                textAlign={"center"}
-                fontSize="12px"
-                _hover={{ textDecoration: "underline", cursor: "pointer" }}
               >
-                ass
+                 {userdata?.email}
               </Text>
+              </NavLink>
+
+              <Divider />
             
             </Stack>
+         
           </CardBody>
         </Card>
-
-
-        
       </Box>
     </>
   );

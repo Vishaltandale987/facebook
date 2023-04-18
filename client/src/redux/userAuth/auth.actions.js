@@ -12,11 +12,11 @@ export const userAuthLogin=(creds)=>async(dispatch)=>{
 
 
     try{
-        let authresponse=await axios.post('http://localhost:8088/user/login',creds)
+        let authresponse=await axios.post('https://graceful-fox-apron.cyclic.app/user/login',creds)
 
         dispatch({type: USER_AUTH_SIGN_IN_SUCCESS,payload:authresponse.data})
 
-        return authresponse.data
+        return authresponse.data && alert( `${authresponse.data.massege}`)
 
     }
 
@@ -37,7 +37,7 @@ export const userAuthSignUP=(creds)=>async(dispatch)=>{
 
 
     try{
-        let authresponse=await axios.post('http://localhost:8088/user/register',creds)
+        let authresponse=await axios.post('https://graceful-fox-apron.cyclic.app/user/register',creds)
 
         dispatch({type: USER_AUTH_SIGN_UP_SUCCESS,payload:authresponse.data})
 

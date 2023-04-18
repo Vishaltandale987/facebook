@@ -24,14 +24,15 @@ const initState = {
   password: "",
 };
 
+let url = "https://graceful-fox-apron.cyclic.app/"
+
 function User_login() {
   const { data, loading, error } = useSelector((store) => store.userMangerdata);
-
   const [formData, setFormData] = useState(initState);
   const navigate = useNavigate();
   const toast = useToast();
   const dispatch = useDispatch();
-  console.log("reducer datat", data.isAuthenticated);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -40,7 +41,7 @@ function User_login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let res = await fetch(`http://localhost:8088/user/get`, {
+      let res = await fetch(`https://graceful-fox-apron.cyclic.app/user/get`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -58,10 +59,9 @@ function User_login() {
 
     dispatch(userAuthLogin(formData));
   };
-  console.log(data.isAuthenticated)
 
-  if (data.isAuthenticated) {
-    alert("login")
+  if (data.massege === "login successful") {
+
     setTimeout(() => {
       navigate("/");
     }, 2000);

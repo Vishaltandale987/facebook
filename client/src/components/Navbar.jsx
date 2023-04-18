@@ -39,10 +39,14 @@ import {
   SunIcon,
 } from "@chakra-ui/icons";
 import User_Auth from "./User_Auth";
+import Search from "../pages/Search";
 
 const Links = [
   { url: "profile", title: "Profile" },
   { url: "message", title: "Message" },
+  { url: "all_user", title: "All User" },
+
+
 ];
 
 let Auth = true;
@@ -52,7 +56,7 @@ function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+      <Box bg={useColorModeValue("#DADBDD", "gray.900")} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <IconButton
             size={"md"}
@@ -79,7 +83,7 @@ function Navbar() {
               <NavLink to="/message">
                 <ChatIcon className="icon" />
               </NavLink>
-              <NavLink to="/profile">
+              <NavLink to="/log_profile">
                 <AtSignIcon className="icon" />
               </NavLink>
 
@@ -89,13 +93,18 @@ function Navbar() {
             </HStack>
           </HStack>
 
-          <InputGroup w="500">
+          {/* <InputGroup w="500">
             <InputLeftElement
               pointerEvents="none"
               children={<Search2Icon color="gray.300" />}
             />
             <Input type="tel" placeholder="Search people"  />
-          </InputGroup>
+          </InputGroup> */}
+
+              <Search />
+
+
+
           <Flex alignItems={"center"}>
             <Button mr={4} onClick={toggleColorMode}>
               {colorMode === "light" ? (

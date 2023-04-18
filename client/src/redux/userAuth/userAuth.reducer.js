@@ -7,6 +7,7 @@ import { USER_AUTH_SIGN_IN_ERROR, USER_AUTH_SIGN_IN_LOADING, USER_AUTH_SIGN_IN_S
 export const authInitalState = {
   loading: false,
   data: {
+    massege:"",
     token:"",
     _id: "",
     isAuthenticated: false,
@@ -40,7 +41,7 @@ case USER_AUTH_SIGN_IN_SUCCESS:{
 
   return{
     ...state,
-    data:{isAuthenticated:true, _id:payload.id, token:payload.token},
+    data:{isAuthenticated:true, _id:payload.id, token:payload.token,massege:payload.massege},
     loading:false,
     error:false
   }

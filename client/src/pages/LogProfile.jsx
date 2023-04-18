@@ -20,7 +20,7 @@ import CreatePost from "../post/createPost/CreatePost";
 import Post from "../post/Poster/Post";
 import axios from "axios";
 
-function Profile() {
+function LogProfile() {
   const navigate = useNavigate();
 
   const [image, setimage] = useState("");
@@ -45,9 +45,7 @@ function Profile() {
   //  const UserPostCard =""
 
   //get post userId
-  let ass = localStorage.getItem("profile");
-
-  let logId = localStorage.getItem("id");
+  let ass = localStorage.getItem("id");
   const getPost = async () => {
     try {
       const res = await axios(
@@ -67,22 +65,18 @@ function Profile() {
   //follow
 
   let id = {
-    userId: logId,
+    userId: ass,
   };
 
   // console.log("id", id);
 
-
-
   const handleFollow = async () => {
     try {
       const res = await axios.put(
-        `https://graceful-fox-apron.cyclic.app/user/${ass}/follow`,
+        `https://graceful-fox-apron.cyclic.app/user/64369b857d8ec50f9b7d20e2/follow`,
         id
       );
       console.log(res);
-      window.location.reload(false);
-
     } catch (error) {
       console.log(error);
     }
@@ -93,12 +87,10 @@ function Profile() {
   const handleFollowing = async () => {
     try {
       const res = await axios.put(
-        `https://graceful-fox-apron.cyclic.app/user/${ass}/unfollow`,
+        `https://graceful-fox-apron.cyclic.app/user/64369b857d8ec50f9b7d20e2/unfollow`,
         id
       );
       console.log(res);
-      window.location.reload(false);
-
     } catch (error) {
       console.log(error);
     }
@@ -391,7 +383,7 @@ function Profile() {
                     color={"blue.500"}
                     onClick={handleFollow}
                   >
-                    Follow
+                    Followers
                   </Text>
 
                   <Text> {getuser?.followings.length} </Text>
@@ -435,4 +427,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default LogProfile;

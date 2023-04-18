@@ -49,7 +49,7 @@ function User_signup() {
 
 
     try{
-      let res=await axios.post('http://localhost:8088/user/register',formData)
+      let res=await axios.post('https://graceful-fox-apron.cyclic.app/user/register',formData)
 
 
       console.log(res.data)

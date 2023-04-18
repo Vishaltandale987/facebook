@@ -1,12 +1,34 @@
-import { Box } from '@chakra-ui/react'
-import React from 'react'
-import { useSelector } from 'react-redux';
-import LeftCompo from '../post/LeftCompo/LeftCompo'
-import MainPost from '../post/mainpost/MainPost'
+import { Box, Button, Text } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import LeftCompo from "../post/LeftCompo/LeftCompo";
+import MainPost from "../post/mainpost/MainPost";
+import axios from "axios";
+import RigthCompo from "../post/RigthCompo/RigthCompo";
+import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
+
+import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 
 function Home() {
-  const { data } = useSelector((store) => store.userMangerdata);
-  // console.log(data)
+  const [userdata, setuserdata] = useState();
+
+  const getUser = async () => {
+    try {
+      const res = await axios(`https://graceful-fox-apron.cyclic.app/user`);
+      setuserdata(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  //  userdata.reverse()
+
+  // console.log("Rigth", userdata);
+
+  // Pagination
+
 
   return (
     <div>
@@ -17,18 +39,39 @@ function Home() {
         >
           <LeftCompo />
         </Box>
+
         <Box flex={1} h="100%" overflowY={"scroll"} className="scroll-hidden">
+          {/* <HamburgerIcon 
+          onClick={handleDisplay}
+          display={{ base: "none", sm: "none", md: "none", lg: "block" }}
+          className="ham"
+
+          /> */}
           <MainPost />
         </Box>
         <Box
           w="25%"
           display={{ base: "none", sm: "none", md: "none", lg: "block" }}
+          id="display"
         >
-          {/* <RightCompo /> */}
+          <Text mt={5}>
+            <b>All Active Users {userdata?.length}</b>
+          </Text>
+          {/* <CloseIcon 
+          onClick={handleDisplayNone}
+          display={{ base: "none", sm: "none", md: "none", lg: "block" }}
+          className="ham"
+
+          /> */}
+
+          {userdata?.map((el, index) => {
+            return <RigthCompo key={index} data={el} />;
+          })}
+     
         </Box>
       </Box>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

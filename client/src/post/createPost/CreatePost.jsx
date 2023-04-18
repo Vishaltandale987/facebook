@@ -7,6 +7,7 @@ import { Input, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { frameData } from "framer-motion";
+import moment from 'moment';
 
 let id = localStorage.getItem("id");
 
@@ -15,6 +16,8 @@ let id = localStorage.getItem("id");
 
 
 const initState = {
+  user_profilePicture:"",
+  postTime:"",
   username:"",
   userId: id,
   desc: "",
@@ -27,6 +30,7 @@ export default function CreatePost() {
   const desc = useRef();
   const [image, setimage] = useState("");
   const [formData, setFormData] = useState(initState);
+  const [userdata, setuserdata] = useState()
 
 
 
@@ -34,13 +38,15 @@ export default function CreatePost() {
   const toast = useToast();
 
 
+  let time = moment().format('MMMM Do YYYY, h:mm:ss a')
+
   //get username
 
   let getId =async () => {
     try {
-      const res = await axios(`http://localhost:8088/user/${id}`);
+      const res = await axios(`https://graceful-fox-apron.cyclic.app/user/${id}`);
        
-       setFormData({ ...formData, username: res.data.username });
+       setFormData({ ...formData, username: res.data.username,user_profilePicture:res.data.profilePicture,postTime :time });
     } catch (error) {
       console.log(error);
     }
@@ -48,7 +54,7 @@ export default function CreatePost() {
 
 useEffect(() => {
   getId()
-
+  getUser()
 }, [])
   
 
@@ -64,7 +70,7 @@ useEffect(() => {
     data.append("upload_preset", "ml_default");
     data.append("cloud_name", "dd9cmhunr");
 
-    fetch("http://api.cloudinary.com/v1_1/dd9cmhunr/image/upload", {
+    fetch("https://api.cloudinary.com/v1_1/dd9cmhunr/image/upload", {
       method: "POST",
       body: data,
     })
@@ -89,7 +95,7 @@ useEffect(() => {
 
   const add = async () => {
     try{
-      let res=await axios.post('http://localhost:8088/post',formData)
+      let res=await axios.post('https://graceful-fox-apron.cyclic.app/post',formData)
       console.log(res.data)
 
       if(res.data){
@@ -109,7 +115,7 @@ useEffect(() => {
     }
   }
 
-  if(formData.img !== ""){
+  if(formData.img !== "" && id!==""){
     add()
 
   }
@@ -117,22 +123,24 @@ useEffect(() => {
 
 
 
+  // get users 
+  let ass = localStorage.getItem("id");
 
-  // post
+  const getUser = async () => {
 
 
-  // const handlePosts = async () => {
+    try {
+      const res = await axios(`https://graceful-fox-apron.cyclic.app/user/${ass}`);
+      setuserdata(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //   try{
-  //     let res=await axios.post('http://localhost:8088/post',formData)
-  //     console.log(res.data)
-  //   }
-  //   catch(err){
-  
-  //   console.log(err)
-  //   }
 
-  // }
+
+
+
 
 
 
@@ -143,11 +151,13 @@ useEffect(() => {
 
   return (
     <div className="share">
+
+     
       <div className="shareWrapper">
         <div className="shareTop">
           <img
             className="shareProfileImg"
-            src="https://avatars.githubusercontent.com/u/107469218?v=4"
+            src={userdata ?.profilePicture}
             alt=""
           />
 
