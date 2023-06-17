@@ -4,7 +4,7 @@ Facebook is an scalable makeup Social Media.
 
 ### It is an Individual Project.
 
-Project link -> https://guileless-cannoli-3e68ba.netlify.app/
+Project link -> https://jolly-zabaione-9e9302.netlify.app/
 
 ### In this project Tech stack used are
 
