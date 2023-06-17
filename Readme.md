@@ -19,9 +19,9 @@ Project link -> https://jolly-zabaione-9e9302.netlify.app/
 10. Express js
 11. Node JS
 
-### In this project we have
 
-# 1. Landing Page
+
+Landing Page
 
 ![landing page](http://res.cloudinary.com/dd9cmhunr/image/upload/v1681583605/Screenshot_535_cubpjr.png)
 
