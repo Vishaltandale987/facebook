@@ -4,7 +4,7 @@ Facebook is an scalable makeup Social Media.
 
 ### It is an Individual Project.
 
-Project link -> https://sprightly-hummingbird-9e02d8.netlify.app/
+Project link -> https://facebook-project-eight.vercel.app/
 
 ### In this project Tech stack used are
 
